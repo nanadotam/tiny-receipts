@@ -32,17 +32,49 @@ export function ReceiptPreview({ receipt, logoDataUrl }: ReceiptPreviewProps) {
     try {
       const { generateReceiptPDF } = await import("@/lib/utils/pdf-generator")
       const blob = await generateReceiptPDF(receipt, logoDataUrl)
+      
+      // Detect iOS Safari
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as unknown as { MSStream?: unknown }).MSStream
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+      const isIOSSafari = isIOS || (isSafari && 'ontouchend' in document)
+      
       const url = URL.createObjectURL(blob)
-      const link = document.createElement("a")
-      link.href = url
-      link.download = `receipt-${receipt.receiptNumber}.pdf`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
+      
+      if (isIOSSafari) {
+        // iOS Safari: Open in new tab for user to save manually
+        // This is more reliable than programmatic download on iOS
+        const newWindow = window.open(url, '_blank')
+        if (!newWindow) {
+          // If popup blocked, try alternative approach
+          const link = document.createElement("a")
+          link.href = url
+          link.target = "_blank"
+          link.rel = "noopener noreferrer"
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        }
+        // Delay cleanup for Safari to ensure PDF loads
+        setTimeout(() => URL.revokeObjectURL(url), 10000)
+      } else {
+        // Standard download for other browsers
+        const link = document.createElement("a")
+        link.href = url
+        link.download = `receipt-${receipt.receiptNumber}.pdf`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+      }
     } catch (error) {
       console.error("Failed to generate PDF:", error)
-      alert("Failed to generate PDF. Please try again.")
+      // More helpful error message for mobile users
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+      if (isIOS) {
+        alert("Failed to generate PDF on this device. Please try again, or use a desktop browser if the issue persists.")
+      } else {
+        alert("Failed to generate PDF. Please try again.")
+      }
     } finally {
       setIsDownloading(false)
     }

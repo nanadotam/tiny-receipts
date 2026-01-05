@@ -124,11 +124,22 @@ export async function generateReceiptPDF(receipt: Receipt, logoDataUrl?: string 
   document.body.appendChild(container)
 
   try {
-    // Convert HTML to canvas
+    // Detect iOS Safari for mobile-specific optimizations
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as unknown as { MSStream?: unknown }).MSStream
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+    const isIOSSafari = isIOS || (isSafari && 'ontouchend' in document)
+    
+    // Convert HTML to canvas with mobile-optimized settings
     const canvas = await html2canvas(container, {
-      scale: 2,
+      scale: isIOSSafari ? 1.5 : 2, // Lower scale on iOS to prevent memory issues
       backgroundColor: "#ffffff",
       logging: false,
+      useCORS: true,
+      allowTaint: true,
+      // iOS Safari needs these optimizations
+      imageTimeout: 15000,
+      removeContainer: false,
+      foreignObjectRendering: false, // Disable foreignObject which fails on iOS
     })
 
     // Create PDF from canvas
