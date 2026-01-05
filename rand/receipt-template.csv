@@ -1,0 +1,3 @@
+customerName,customerPhone,customerEmail,receiptNumber,receiptDate,description,paymentMethod,currency,subtotal,tax,notes
+John Doe,(555) 123-4567,john.doe@email.com,REC-001,2026-01-05,Tithe,cash,USD,100.00,0,January tithe payment
+Jane Smith,(555) 987-6543,jane.smith@email.com,REC-002,2026-01-05,Building Fund Donation,check,USD,250.00,0,For new sanctuary

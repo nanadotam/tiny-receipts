@@ -1,0 +1,11 @@
+customerName,customerPhone,customerEmail,receiptNumber,receiptDate,description,paymentMethod,currency,subtotal,tax,notes
+Kwame Asante,(020) 555-1234,kwame.asante@gmail.com,REC-2026-001,2026-01-05,Tithe - January,cash,GHS,500.00,0,Monthly tithe payment
+Abena Mensah,(024) 555-2345,abena.mensah@outlook.com,REC-2026-002,2026-01-05,Building Fund Donation,bank_transfer,GHS,1000.00,0,Contribution towards new sanctuary
+Kofi Owusu,(027) 555-3456,kofi.owusu@yahoo.com,REC-2026-003,2026-01-05,Tithe - January,check,GHS,350.00,0,
+Ama Boateng,(055) 555-4567,ama.boateng@gmail.com,REC-2026-004,2026-01-05,Missions Offering,cash,GHS,200.00,0,Support for Ghana missions trip
+Yaw Osei,(050) 555-5678,yaw.osei@hotmail.com,REC-2026-005,2026-01-05,Tithe - January,online,GHS,750.00,0,Mobile money payment
+Akosua Darko,(026) 555-6789,akosua.darko@gmail.com,REC-2026-006,2026-01-05,Youth Ministry Donation,credit_card,GHS,150.00,0,For youth camp supplies
+Kweku Appiah,(020) 555-7890,kweku.appiah@icloud.com,REC-2026-007,2026-01-05,Tithe - January,cash,GHS,600.00,0,
+Efua Adjei,(024) 555-8901,efua.adjei@gmail.com,REC-2026-008,2026-01-05,Thanksgiving Offering,bank_transfer,GHS,2500.00,0,Special thanksgiving for new job
+Nana Agyeman,(027) 555-9012,nana.agyeman@yahoo.com,REC-2026-009,2026-01-05,Tithe - January,check,GHS,425.00,0,Monthly tithe
+Adwoa Sarpong,(055) 555-0123,adwoa.sarpong@gmail.com,REC-2026-010,2026-01-05,Widows Fund,cash,GHS,300.00,0,Monthly contribution to widow support
