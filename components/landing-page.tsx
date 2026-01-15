@@ -23,6 +23,7 @@ interface LandingPageProps {
   onUploadLogo: (file: File) => Promise<string>
   onRemoveLogo: () => void
   onClearSettings: () => void
+  onBackToHub?: () => void
 }
 
 export function LandingPage({
@@ -34,6 +35,7 @@ export function LandingPage({
   onUploadLogo,
   onRemoveLogo,
   onClearSettings,
+  onBackToHub,
 }: LandingPageProps) {
   const [jsonInput, setJsonInput] = useState("")
   const [jsonError, setJsonError] = useState("")
@@ -106,20 +108,30 @@ export function LandingPage({
       <div className="md:hidden w-full">
         <div className="flex flex-col min-h-screen p-4 gap-6 pb-8">
           {/* Header */}
-          <div className="pt-6 flex items-start justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">TinyReceipts</h1>
-              <p className="text-sm text-muted-foreground">Simple, fast receipt generation for churches</p>
-            </div>
-            <div className="flex items-center gap-1">
-              <ThemeToggle />
-              <SettingsDialog
-                settings={settings}
-                onSave={onSaveSettings}
-                onUploadLogo={onUploadLogo}
-                onRemoveLogo={onRemoveLogo}
-                onClear={onClearSettings}
-              />
+          <div className="pt-6 flex flex-col gap-3">
+            {onBackToHub && (
+              <button
+                onClick={onBackToHub}
+                className="text-sm text-muted-foreground hover:text-foreground transition self-start"
+              >
+                ← Back to Hub
+              </button>
+            )}
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-foreground mb-2">Tiny Receipts</h1>
+                <p className="text-sm text-muted-foreground">Simple, fast receipt generation for churches</p>
+              </div>
+              <div className="flex items-center gap-1">
+                <ThemeToggle />
+                <SettingsDialog
+                  settings={settings}
+                  onSave={onSaveSettings}
+                  onUploadLogo={onUploadLogo}
+                  onRemoveLogo={onRemoveLogo}
+                  onClear={onClearSettings}
+                />
+              </div>
             </div>
           </div>
 
@@ -284,9 +296,17 @@ export function LandingPage({
         {/* Left Pane: How It Works */}
         <div className="overflow-y-auto p-8 border-r border-border flex flex-col justify-center bg-background">
           <div className="max-w-md mx-auto w-full space-y-8">
+            {onBackToHub && (
+              <button
+                onClick={onBackToHub}
+                className="text-sm text-muted-foreground hover:text-foreground transition"
+              >
+                ← Back to Tiny Business
+              </button>
+            )}
             <div className="flex items-start justify-between">
               <div>
-                <h1 className="text-4xl font-bold text-foreground mb-3">TinyReceipts</h1>
+                <h1 className="text-4xl font-bold text-foreground mb-3">Tiny Receipts</h1>
                 <p className="text-lg text-muted-foreground">
                   Simple, fast receipt generation for churches. No login required. No payment needed.
                 </p>

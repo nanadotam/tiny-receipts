@@ -5,17 +5,20 @@ import { type Receipt, defaultReceipt } from "@/lib/schemas/receipt"
 import { ReceiptForm } from "@/components/receipt-form"
 import { ReceiptPreview } from "@/components/receipt-preview"
 import { LandingPage } from "@/components/landing-page"
+import { HubLandingPage, type ModuleType } from "@/components/hub-landing-page"
 import { SettingsDialog } from "@/components/settings-dialog"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useSettings } from "@/lib/hooks/use-settings"
 import { Button } from "@/components/ui/button"
 import { Download, Loader2, CheckCircle2, XCircle } from "lucide-react"
 
+type AppView = "hub" | "receipts-landing" | "receipts-app" | "invoices-landing" | "invoices-app"
+
 export default function Home() {
   const { settings, isLoaded, saveSettings, clearSettings, uploadLogo, removeLogo } = useSettings()
   const [receipts, setReceipts] = useState<Receipt[]>([defaultReceipt])
   const [currentReceiptIndex, setCurrentReceiptIndex] = useState(0)
-  const [showApp, setShowApp] = useState(false)
+  const [currentView, setCurrentView] = useState<AppView>("hub")
   const [bulkDownloadProgress, setBulkDownloadProgress] = useState<{
     isDownloading: boolean
     current: number
@@ -42,6 +45,14 @@ export default function Home() {
     }
   }, [isLoaded, settings])
 
+  const handleModuleSelect = (module: ModuleType) => {
+    if (module === "receipts") {
+      setCurrentView("receipts-landing")
+    } else if (module === "invoices") {
+      setCurrentView("invoices-landing")
+    }
+  }
+
   const handleReceiptChange = (updated: Receipt) => {
     const newReceipts = [...receipts]
     newReceipts[currentReceiptIndex] = updated
@@ -51,13 +62,13 @@ export default function Home() {
   const handleCSVUpload = (csvReceipts: Receipt[]) => {
     setReceipts(csvReceipts)
     setCurrentReceiptIndex(0)
-    setShowApp(true)
+    setCurrentView("receipts-app")
   }
 
   const handleJSONInput = (receipt: Receipt) => {
     setReceipts([receipt])
     setCurrentReceiptIndex(0)
-    setShowApp(true)
+    setCurrentView("receipts-app")
   }
 
   const handleStart = () => {
@@ -72,7 +83,7 @@ export default function Home() {
     }
     setReceipts([newReceipt])
     setCurrentReceiptIndex(0)
-    setShowApp(true)
+    setCurrentView("receipts-app")
   }
 
   const handleBulkDownload = async () => {
@@ -122,7 +133,34 @@ export default function Home() {
     }, 3000)
   }
 
-  if (!showApp) {
+  const handleBackToHub = () => {
+    setCurrentView("hub")
+  }
+
+  const handleBackToModuleLanding = () => {
+    if (currentView === "receipts-app") {
+      setCurrentView("receipts-landing")
+    } else if (currentView === "invoices-app") {
+      setCurrentView("invoices-landing")
+    }
+  }
+
+  // Hub view
+  if (currentView === "hub") {
+    return (
+      <HubLandingPage
+        onSelectModule={handleModuleSelect}
+        settings={settings}
+        onSaveSettings={saveSettings}
+        onUploadLogo={uploadLogo}
+        onRemoveLogo={removeLogo}
+        onClearSettings={clearSettings}
+      />
+    )
+  }
+
+  // Receipts landing page
+  if (currentView === "receipts-landing") {
     return (
       <LandingPage
         onStart={handleStart}
@@ -133,7 +171,23 @@ export default function Home() {
         onUploadLogo={uploadLogo}
         onRemoveLogo={removeLogo}
         onClearSettings={clearSettings}
+        onBackToHub={handleBackToHub}
       />
+    )
+  }
+
+  // Invoices landing page (placeholder for now)
+  if (currentView === "invoices-landing") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center p-8">
+          <h1 className="text-3xl font-bold text-foreground mb-4">Tiny Invoices</h1>
+          <p className="text-muted-foreground mb-6">Coming soon! Invoice generation with custom fonts and multi-page support.</p>
+          <Button onClick={handleBackToHub} variant="outline" className="bg-transparent">
+            ← Back to Hub
+          </Button>
+        </div>
+      </div>
     )
   }
 
@@ -148,7 +202,7 @@ export default function Home() {
           <div className="p-4 border-b border-border bg-background sticky top-0 z-10">
             <div className="flex items-center justify-between mb-2">
               <button
-                onClick={() => setShowApp(false)}
+                onClick={handleBackToModuleLanding}
                 className="text-sm text-muted-foreground hover:text-foreground transition"
               >
                 ← Back to Home
@@ -250,7 +304,7 @@ export default function Home() {
         <div className="overflow-y-auto p-6 border-r border-border flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <button
-              onClick={() => setShowApp(false)}
+              onClick={handleBackToModuleLanding}
               className="text-sm text-muted-foreground hover:text-foreground transition"
             >
               ← Back to Home
